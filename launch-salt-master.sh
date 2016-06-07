@@ -1,1 +1,1 @@
-salt-master -c master-config
+salt-master -c master-config -u $USER

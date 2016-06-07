@@ -1,5 +1,7 @@
 user: spio
 master: localhost
+module_dirs:
+ - /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/modules
 
 ipc_mode: tcp
 pki_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/pki/minion

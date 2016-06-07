@@ -4,3 +4,4 @@ proc
 tokens
 jobs
 minions
+module_refresh

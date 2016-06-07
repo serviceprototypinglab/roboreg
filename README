@@ -1,0 +1,7 @@
+This project requires Salt version 2016.3. The non-API parts should work with the older 2014.1.
+
+Launch in the following order (on separate terminals):
+ $ ./launch-salt-master.sh
+ $ ./launch-salt-minion.sh
+ $ salt-key -c config --accept $HOSTNAME
+ $ ./launch-salt-roscommand.sh

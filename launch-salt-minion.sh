@@ -1,1 +1,1 @@
-salt-minion -c master-config -u $USER
+salt-minion -c config -u $USER

@@ -1,5 +1,8 @@
 user: spio
 
+rest_wsgi:
+  port: 8001
+
 ipc_mode: tcp
 pki_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/pki/master
 cachedir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/cachedir

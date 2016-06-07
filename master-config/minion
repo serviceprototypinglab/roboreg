@@ -1,6 +1,8 @@
+user: spio
 master: localhost
-pki_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/master-config/salt/pki/minion
 
+ipc_mode: tcp
+pki_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/pki/minion
 cachedir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/cachedir
 ##pidfile: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/pidfile
 sock_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/miscdir

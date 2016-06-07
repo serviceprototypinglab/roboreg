@@ -1,0 +1,4 @@
+*.pem
+*.pub
+minions
+minions_*

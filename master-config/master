@@ -1,0 +1,5 @@
+pki_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/master-config/salt/pki/master
+cachedir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/cachedir
+#pidfile: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/pidfile
+sock_dir: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/miscdir
+log_file: /home/spio/zhawprojekte/INTERNALFOLDER/ecrp-devicemanager/miscdir/salt.log

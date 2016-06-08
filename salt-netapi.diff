@@ -1,0 +1,12 @@
+--- __init__.py.old	2016-06-08 05:20:05.731594039 -0400
++++ __init__.py	2016-06-08 05:10:12.743621218 -0400
+@@ -42,6 +42,9 @@
+             ipc_file = 'publish_pull.ipc'
+         else:
+             ipc_file = 'workers.ipc'
++        ipc_file = 'pidfile-master'
++        # FIX: There are no IPC files, checking on hardcoded PID file instead
++        #raise Exception("CHECKRUNNING: %s/%s" % (self.opts['sock_dir'], ipc_file))
+         return os.path.exists(os.path.join(
+             self.opts['sock_dir'],
+             ipc_file))

@@ -8,6 +8,7 @@ import json
 import sys
 import time
 import pickle
+import hashlib
 
 class Robot:
 	def __init__(self, name, capabilities, timestamp=time.time()):
@@ -24,7 +25,8 @@ class Robot:
 			decay = "  *"
 		if t - self.timestamp > 1000:
 			decay = "   "
-		return "Robot {:s} / {:.3f} / {:s} [{:s}]".format(self.name, self.timestamp, str(self.capabilities), decay)
+		capstr = hashlib.sha1(str(self.capabilities).encode("utf-8")).hexdigest()[:6]
+		return "Robot {:s} / t={:d} / h={:s} [{:s}]".format(self.name, int(self.timestamp), capstr, decay)
 
 class Roboreg:
 	def __init__(self):
@@ -65,12 +67,16 @@ class Roboreg:
 		s = json.loads(f.read().decode("utf-8"))
 		return s
 
-	def introspec(self, token):
+	def makedata(self, func):
 		data = []
 		data.append(("client", "local"))
 		data.append(("tgt", "*"))
-		data.append(("fun", "ros.introspec"))
+		data.append(("fun", func))
 		data = urllib.parse.urlencode(data)
+		return data
+
+	def introspec(self, token):
+		data = self.makedata("ros.introspec")
 		#d = {}
 		#for k, v in data:
 		#	d[k] = v
@@ -93,11 +99,28 @@ class Roboreg:
 		for r in self.robots:
 			print(r)
 
+	def showdetails(self, name):
+		for r in self.robots:
+			if r.name == name:
+				for capability in r.capabilities:
+					print("- {:s}".format(capability))
+					# ...
+					pass
+
+	def call(self, func, arglist):
+		token = self.login()
+		data = self.makedata("ros.{:s}".format(func))
+		s = self.query(data, token)
+		returndata = s["return"][0]
+		print(returndata)
+
 	def usage(self):
 		print("Usage:")
-		print("roboreg scan - live-scan the network")
-		print("        show - show cached results")
-		print("        hist - audit the history")
+		print("roboreg scan        - live-scan the network")
+		print("        show        - show cached results")
+		print("        show <name> - show details about a robot")
+		print("        hist        - audit the history")
+		print("        call <func> - call a function (with parameters)")
 
 	def work(self):
 		if len(sys.argv) == 1:
@@ -110,9 +133,21 @@ class Roboreg:
 			token = self.login()
 			self.introspec(token)
 		elif command == "show":
-			self.show()
+			if len(sys.argv) == 2:
+				self.show()
+			elif len(sys.argv) == 3:
+				self.showdetails(sys.argv[2])
+			else:
+				print("Error: invalid show subcommand.")
+				sys.exit(1)
 		elif command == "hist":
 			pass
+		elif command == "call":
+			if len(sys.argv) >= 3:
+				self.call(sys.argv[2], sys.argv[3:])
+			else:
+				print("Error: invalid call subcommand.")
+				sys.exit(1)
 		else:
 			print("Error: invalid command.")
 			sys.exit(1)

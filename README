@@ -4,4 +4,13 @@ Launch in the following order (on separate terminals):
  $ ./launch-salt-master.sh
  $ ./launch-salt-minion.sh
  $ salt-key -c config --accept $HOSTNAME
- $ ./launch-salt-roscommand.sh
+ $ ./launch-salt-roscommand.sh # for testing
+
+To make use of the Roboreg registry, launch in addition:
+ $ ./launch-salt-api.sh
+ $ ./api-call-http.sh # for testing
+ $ ./roboreg
+
+The output of Roboreg is as follows:
+ Robot ecrp / t=1465385020 / h=adbbc3 [  *]
+       ^name  ^timestamp     ^hash    ^liveliness

@@ -1,7 +1,23 @@
 user: $USER
 
-rest_wsgi:
+#rest_wsgi:
+#  port: 8001
+
+rest_cherrypy:
   port: 8001
+  host: 127.0.0.1
+  disable_ssl: true
+
+external_auth:
+  auto:
+    ecrp:
+      - .*
+
+#external_auth:
+#  sharedsecret:
+#    ecrp:
+#      - .*
+#sharedsecret: s3cr3t
 
 ipc_mode: tcp
 pki_dir: $PWD/pki/master

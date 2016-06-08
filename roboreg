@@ -9,6 +9,7 @@ import sys
 import time
 import pickle
 import hashlib
+import os
 
 class Robot:
 	def __init__(self, name, capabilities, timestamp=time.time()):
@@ -34,22 +35,33 @@ class Roboreg:
 		self.password = "s3cr3t"
 		self.eauth = "auto"
 		self.saltapi = "http://localhost:8001"
+		self.cachedir = ".roboregistry.dir"
+
 		self.robots = []
 
 		self.load()
 
 	def load(self):
+		regpath = os.path.join(self.cachedir, "roboregistry")
 		try:
-			f = open(".roboregistry", "rb")
+			f = open(regpath, "rb")
 			self.robots = pickle.load(f)
 			f.close()
 		except:
 			pass
 
 	def save(self):
-		f = open(".roboregistry", "wb")
+		os.makedirs(self.cachedir, exist_ok=True)
+		if not os.path.isdir(os.path.join(self.cachedir, ".git")):
+			os.system("cd '{:s}' && git init -q".format(self.cachedir))
+		regpath = os.path.join(self.cachedir, "roboregistry")
+		f = open(regpath, "wb")
 		pickle.dump(self.robots, f)
 		f.close()
+		os.system("cd {:s} && git add . && git commit -q -m reg".format(self.cachedir))
+
+	def history(self):
+		os.system("cd {:s} && git log".format(self.cachedir))
 
 	def login(self):
 		data = 'username={:s}&password={:s}&eauth={:s}'.format(self.username, self.password, self.eauth)
@@ -67,11 +79,13 @@ class Roboreg:
 		s = json.loads(f.read().decode("utf-8"))
 		return s
 
-	def makedata(self, func):
+	def makedata(self, func, arglist=[]):
 		data = []
 		data.append(("client", "local"))
 		data.append(("tgt", "*"))
 		data.append(("fun", func))
+		for arg in arglist:
+			data.append(("arg", arg))
 		data = urllib.parse.urlencode(data)
 		return data
 
@@ -109,7 +123,7 @@ class Roboreg:
 
 	def call(self, func, arglist):
 		token = self.login()
-		data = self.makedata("ros.{:s}".format(func))
+		data = self.makedata("ros.{:s}".format(func), arglist)
 		s = self.query(data, token)
 		returndata = s["return"][0]
 		print(returndata)
@@ -141,7 +155,7 @@ class Roboreg:
 				print("Error: invalid show subcommand.")
 				sys.exit(1)
 		elif command == "hist":
-			pass
+			self.history()
 		elif command == "call":
 			if len(sys.argv) >= 3:
 				self.call(sys.argv[2], sys.argv[3:])

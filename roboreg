@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+#
+# Robot registry client
+
+import urllib.request
+import urllib.parse
+import json
+import sys
+import time
+import pickle
+
+class Robot:
+	def __init__(self, name, capabilities, timestamp=time.time()):
+		self.name = name
+		self.capabilities = capabilities
+		self.timestamp = timestamp
+
+	def __str__(self):
+		t = time.time()
+		decay = "***"
+		if t - self.timestamp > 10:
+			decay = " **"
+		if t - self.timestamp > 100:
+			decay = "  *"
+		if t - self.timestamp > 1000:
+			decay = "   "
+		return "Robot {:s} / {:.3f} / {:s} [{:s}]".format(self.name, self.timestamp, str(self.capabilities), decay)
+
+class Roboreg:
+	def __init__(self):
+		self.username = "ecrp"
+		self.password = "s3cr3t"
+		self.eauth = "auto"
+		self.saltapi = "http://localhost:8001"
+		self.robots = []
+
+		self.load()
+
+	def load(self):
+		try:
+			f = open(".roboregistry", "rb")
+			self.robots = pickle.load(f)
+			f.close()
+		except:
+			pass
+
+	def save(self):
+		f = open(".roboregistry", "wb")
+		pickle.dump(self.robots, f)
+		f.close()
+
+	def login(self):
+		data = 'username={:s}&password={:s}&eauth={:s}'.format(self.username, self.password, self.eauth)
+		f = urllib.request.urlopen("{:s}/login".format(self.saltapi), bytearray(data, "utf-8"))
+		s = json.loads(f.read().decode("utf-8"))
+		token = s["return"][0]["token"]
+		return token
+
+	def query(self, data, token):
+		headers = {}
+		headers["X-Auth-Token"] = token
+		#headers["Content-Type"] = "application/json"
+		req = urllib.request.Request(self.saltapi, bytearray(data, "utf-8"), headers)
+		f = urllib.request.urlopen(req)
+		s = json.loads(f.read().decode("utf-8"))
+		return s
+
+	def introspec(self, token):
+		data = []
+		data.append(("client", "local"))
+		data.append(("tgt", "*"))
+		data.append(("fun", "ros.introspec"))
+		data = urllib.parse.urlencode(data)
+		#d = {}
+		#for k, v in data:
+		#	d[k] = v
+		#data = json.dumps(d)
+		s = self.query(data, token)
+		returndata = s["return"][0]
+		for name in returndata:
+			capabilities = returndata[name]
+			r = Robot(name, capabilities)
+			for index, robot in enumerate(self.robots):
+				if robot.name == r.name:
+					self.robots.pop(index)
+					break
+			self.robots.append(r)
+			print(r)
+
+		self.save()
+
+	def show(self):
+		for r in self.robots:
+			print(r)
+
+	def usage(self):
+		print("Usage:")
+		print("roboreg scan - live-scan the network")
+		print("        show - show cached results")
+		print("        hist - audit the history")
+
+	def work(self):
+		if len(sys.argv) == 1:
+			self.usage()
+			sys.exit(1)
+
+		command = sys.argv[1]
+
+		if command == "scan":
+			token = self.login()
+			self.introspec(token)
+		elif command == "show":
+			self.show()
+		elif command == "hist":
+			pass
+		else:
+			print("Error: invalid command.")
+			sys.exit(1)
+
+rreg = Roboreg()
+rreg.work()

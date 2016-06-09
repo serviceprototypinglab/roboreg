@@ -1,0 +1,6 @@
+[reg]
+username = ecrp
+password = s3cr3t
+eauth = auto
+saltapi = http://localhost:8001
+cachedir = .roboregistry.dir

@@ -1,5 +1,7 @@
 This project requires Salt version 2016.3. The non-API parts should work with the older 2014.1.
 
+Copy roboreg.ini.dist to roboreg.ini and configure it accordingly.
+
 Launch in the following order (on separate terminals):
  $ ./launch-salt-master.sh
  $ ./launch-salt-minion.sh
@@ -14,3 +16,5 @@ To make use of the Roboreg registry, launch in addition:
 The output of Roboreg is as follows:
  Robot ecrp / t=1465385020 / h=adbbc3 [  *]
        ^name  ^timestamp     ^hash    ^liveliness
+
+Notice how mutual exclusion is realised with "roboreg show ecrp".

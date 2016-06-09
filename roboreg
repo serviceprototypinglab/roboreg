@@ -10,6 +10,7 @@ import time
 import pickle
 import hashlib
 import os
+import configparser
 
 class Robot:
 	def __init__(self, name, capabilities, timestamp=time.time()):
@@ -41,11 +42,16 @@ class Robot:
 
 class Roboreg:
 	def __init__(self):
-		self.username = "ecrp"
-		self.password = "s3cr3t"
-		self.eauth = "auto"
-		self.saltapi = "http://localhost:8001"
-		self.cachedir = ".roboregistry.dir"
+		config = configparser.ConfigParser()
+		config.read("roboreg.ini")
+		if not "reg" in config.sections():
+			print("Error: needs valid roboreg.ini.")
+			sys.exit(1)
+		self.username = config["reg"]["username"]
+		self.password = config["reg"]["password"]
+		self.eauth = config["reg"]["eauth"]
+		self.saltapi = config["reg"]["saltapi"]
+		self.cachedir = config["reg"]["cachedir"]
 
 		self.robots = []
 

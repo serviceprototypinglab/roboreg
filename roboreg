@@ -13,34 +13,44 @@ import os
 import configparser
 
 class Robot:
-	def __init__(self, name, capabilities, timestamp=time.time()):
+	def __init__(self, name, capabilities, timestamp=time.time(), properties=None):
 		self.name = name
 		self.capabilities = capabilities
 		self.timestamp = timestamp
+		self.properties = properties
+		self.propertytimestamp = timestamp
 
-	def __str__(self):
+	def _decay(self, timestamp):
 		t = time.time()
 		decay = "***"
-		if t - self.timestamp > 10:
+		if t - timestamp > 10:
 			decay = " **"
-		if t - self.timestamp > 100:
+		if t - timestamp > 100:
 			decay = "  *"
-		if t - self.timestamp > 1000:
+		if t - timestamp > 1000:
 			decay = "   "
+		return decay
+
+	def __str__(self):
 		capsort = list(self.capabilities.keys())[:]
 		capsort.sort()
 		capstr = hashlib.sha1(str(capsort).encode("utf-8")).hexdigest()[:6]
-		rstr = "Robot {:s} / t={:d} / h={:s} [{:s}]".format(self.name, int(self.timestamp), capstr, decay)
+		rstr = "Robot {:s} / t={:d} / h={:s} [{:s}]".format(self.name, int(self.timestamp), capstr, self._decay(self.timestamp))
 		return "\x1b[33m\x1b[1m{:s}\x1b[0m".format(rstr)
 
 	def printcapabilities(self):
 		for capability in self.capabilities:
-			capstr = "- {:s} / {:b}".format(capability, self.capabilities[capability])
+			capstr = "- {:s} / {:s}".format(capability, ("available", "blocked")[self.capabilities[capability]])
 			if self.capabilities[capability]:
 				col = "\x1b[31m"
 			else:
 				col = "\x1b[32m"
 			print("{:s}{:s}\x1b[0m".format(col, capstr))
+
+	def printproperties(self):
+		for property in self.properties:
+			propstr = "+ {:s} = {:s} [{:s}]".format(property, str(self.properties[property]), self._decay(self.propertytimestamp))
+			print("\x1b[33m{:s}\x1b[0m".format(propstr))
 
 class Roboreg:
 	def __init__(self):
@@ -136,8 +146,22 @@ class Roboreg:
 			if r.name == name:
 				print(r)
 				r.printcapabilities()
+				self.showproperties(name)
 				return
 		print("Error: robot not found.")
+
+	def showproperties(self, name):
+		token = self.login()
+		data = self.makedata("ros.mergedproperties")
+		s = self.query(data, token)
+		returndata = s["return"][0]
+		for name in returndata:
+			for r in self.robots:
+				if r.name == name:
+					r.properties = returndata[name]
+					r.propertytimestamp = time.time()
+					r.printproperties()
+					break
 
 	def call(self, func, arglist):
 		token = self.login()

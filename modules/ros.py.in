@@ -71,6 +71,17 @@ def staticproperties():
 	props = yaml.load(open("%PATH%/modules/properties.yaml"))
 	return props["maxspeed"]
 
+@SafeGuardWrapper
+def dynamicproperties():
+	import time
+	return {"time": time.time()}
+
+@SafeGuardWrapper
+def allproperties():
+	d = staticproperties()
+	d.update(dynamicproperties())
+	return d
+
 def safeguard():
 	global _sg
 	_sg = SafeGuard()

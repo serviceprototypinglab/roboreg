@@ -11,7 +11,7 @@ class SafeGuard:
 		#	globals()[func] = partial(self.guard, func)
 
 		# FIXME: is set to /root otherwise which cannot be written to
-		os.chdir("/home/ecrp/ecrp-devicemanager")
+		os.chdir("%PATH%")
 
 		self.lockdir = ".locks"
 		#os.makedirs(self.lockdir, exists_ok=True) # PY3

@@ -1,0 +1,22 @@
+_roboreg()
+{
+  local cur=${COMP_WORDS[COMP_CWORD]}
+  local prev=${COMP_WORDS[COMP_CWORD-1]}
+
+  case "$prev" in
+    show)
+      robots=`./roboreg show | cut -d " " -f 2 | tr "\\n" " "`
+      COMPREPLY=( $( compgen -W $robots -- $cur ) )
+      ;;
+    prop)
+      robots=`./roboreg show | cut -d " " -f 2 | tr "\\n" " "`
+      COMPREPLY=( $( compgen -W $robots -- $cur ) )
+      ;;
+    call)
+      ;;
+    ./roboreg)
+      COMPREPLY=( $( compgen -W "scan prop show hist call" -- $cur ) )
+      ;;
+  esac
+}
+complete -F _roboreg ./roboreg

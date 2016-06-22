@@ -190,8 +190,11 @@ class Roboreg:
 
 		self.save("getproperties")
 
-	def call(self, func, arglist):
-		token = self.login()
+	def call(self, func, arglist, token=None):
+		if not token:
+			token = self.login()
+		if not token:
+			return
 		data = self.makedata("ros.{:s}".format(func), arglist)
 		s = self.query(data, token)
 		if not s:

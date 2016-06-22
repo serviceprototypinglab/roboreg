@@ -65,6 +65,12 @@ def introspec():
 		lockedfuncs[func] = os.path.isfile(lockfile)
 	return lockedfuncs
 
+@SafeGuardWrapper
+def staticproperties():
+	import yaml
+	props = yaml.load(open("%PATH%/modules/properties.yaml"))
+	return props["maxspeed"]
+
 def safeguard():
 	global _sg
 	_sg = SafeGuard()
@@ -74,5 +80,6 @@ if __name__ == "__main__":
 	print(test())
 	print(introspec())
 	print(movetoposition(1, 2))
+	print(staticproperties())
 else:
 	safeguard()

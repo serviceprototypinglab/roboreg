@@ -1,3 +1,4 @@
 .roboregistry
 .roboregistry.dir
 roboreg.ini
+.locks

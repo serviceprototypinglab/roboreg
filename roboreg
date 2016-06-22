@@ -48,6 +48,8 @@ class Robot:
 			print("{:s}{:s}\x1b[0m".format(col, capstr))
 
 	def printproperties(self):
+		if not self.properties:
+			return
 		for property in self.properties:
 			propstr = "+ {:s} = {:s} [{:s}]".format(property, str(self.properties[property]), self._decay(self.propertytimestamp))
 			print("\x1b[33m{:s}\x1b[0m".format(propstr))
@@ -88,12 +90,20 @@ class Roboreg:
 		f.close()
 		os.system("cd {:s} && git add . && git commit -q -m reg".format(self.cachedir))
 
+	def neterror(self):
+		estr = "Network error."
+		print("\x1b[31m\x1b[1m{:s}\x1b[0m".format(estr))
+
 	def history(self):
 		os.system("cd {:s} && git log --oneline".format(self.cachedir))
 
 	def login(self):
 		data = 'username={:s}&password={:s}&eauth={:s}'.format(self.username, self.password, self.eauth)
-		f = urllib.request.urlopen("{:s}/login".format(self.saltapi), bytearray(data, "utf-8"))
+		try:
+			f = urllib.request.urlopen("{:s}/login".format(self.saltapi), bytearray(data, "utf-8"))
+		except:
+			self.neterror()
+			return
 		s = json.loads(f.read().decode("utf-8"))
 		token = s["return"][0]["token"]
 		return token
@@ -102,7 +112,11 @@ class Roboreg:
 		headers = {}
 		headers["X-Auth-Token"] = token
 		#headers["Content-Type"] = "application/json"
-		req = urllib.request.Request(self.saltapi, bytearray(data, "utf-8"), headers)
+		try:
+			req = urllib.request.Request(self.saltapi, bytearray(data, "utf-8"), headers)
+		except:
+			self.neterror()
+			return
 		f = urllib.request.urlopen(req)
 		s = json.loads(f.read().decode("utf-8"))
 		return s
@@ -117,13 +131,19 @@ class Roboreg:
 		data = urllib.parse.urlencode(data)
 		return data
 
-	def introspec(self, token):
+	def introspec(self, token=None):
+		if not token:
+			token = self.login()
+		if not token:
+			return
 		data = self.makedata("ros.introspec")
 		#d = {}
 		#for k, v in data:
 		#	d[k] = v
 		#data = json.dumps(d)
 		s = self.query(data, token)
+		if not s:
+			return
 		returndata = s["return"][0]
 		for name in returndata:
 			capabilities = returndata[name]
@@ -146,14 +166,19 @@ class Roboreg:
 			if r.name == name:
 				print(r)
 				r.printcapabilities()
-				self.showproperties(name)
+				r.printproperties()
 				return
 		print("Error: robot not found.")
 
-	def showproperties(self, name):
-		token = self.login()
+	def getproperties(self, name, token=None):
+		if not token:
+			token = self.login()
+		if not token:
+			return
 		data = self.makedata("ros.mergedproperties")
 		s = self.query(data, token)
+		if not s:
+			return
 		returndata = s["return"][0]
 		for name in returndata:
 			for r in self.robots:
@@ -163,16 +188,21 @@ class Roboreg:
 					r.printproperties()
 					break
 
+		self.save()
+
 	def call(self, func, arglist):
 		token = self.login()
 		data = self.makedata("ros.{:s}".format(func), arglist)
 		s = self.query(data, token)
+		if not s:
+			return
 		returndata = s["return"][0]
 		print(returndata)
 
 	def usage(self):
 		print("Usage:")
 		print("roboreg scan        - live-scan the network")
+		print("        prop <name> - live-scan the properties")
 		print("        show        - show cached results")
 		print("        show <name> - show details about a robot")
 		print("        hist        - audit the history")
@@ -186,16 +216,20 @@ class Roboreg:
 		command = sys.argv[1]
 
 		if command == "scan":
-			token = self.login()
-			self.introspec(token)
+			self.introspec()
 		elif command == "show":
 			if len(sys.argv) == 2:
 				self.show()
 			elif len(sys.argv) == 3:
 				self.showdetails(sys.argv[2])
 			else:
-				print("Error: invalid show subcommand.")
+				print("Error: invalid show argument.")
 				sys.exit(1)
+		elif command == "prop":
+			if len(sys.argv) == 3:
+				self.getproperties(sys.argv[2])
+			else:
+				print("Error: invalid prop argument.")
 		elif command == "hist":
 			self.history()
 		elif command == "call":

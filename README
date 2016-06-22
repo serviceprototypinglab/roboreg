@@ -9,6 +9,7 @@ Install Salt and (optionally) deactivate the system-wide daemons to rather contr
  $ apt-get install salt-master salt-minion salt-api
  $ update-rc.d salt-master disable; systemctl stop salt-master
  $ update-rc.d salt-minion disable; systemctl stop salt-minion
+ $ sudo patch /usr/lib/python2.7/dist-packages/salt/netapi/__init__.py salt-netapi.diff
 
 Copy roboreg.ini.dist to roboreg.ini and configure it accordingly.
 You MUST also change the path in modules/ros.py (until we find a solution...)

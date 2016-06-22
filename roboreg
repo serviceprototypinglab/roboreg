@@ -80,7 +80,7 @@ class Roboreg:
 		except:
 			pass
 
-	def save(self):
+	def save(self, msg="unspecified"):
 		os.makedirs(self.cachedir, exist_ok=True)
 		if not os.path.isdir(os.path.join(self.cachedir, ".git")):
 			os.system("cd '{:s}' && git init -q".format(self.cachedir))
@@ -88,7 +88,7 @@ class Roboreg:
 		f = open(regpath, "wb")
 		pickle.dump(self.robots, f)
 		f.close()
-		os.system("cd {:s} && git add . && git commit -q -m reg".format(self.cachedir))
+		os.system("cd {:s} && git add . && git commit -q -m '{:s}'".format(self.cachedir, msg))
 
 	def neterror(self):
 		estr = "Network error."
@@ -155,7 +155,7 @@ class Roboreg:
 			self.robots.append(r)
 			print(r)
 
-		self.save()
+		self.save("introspec")
 
 	def show(self):
 		for r in self.robots:
@@ -188,7 +188,7 @@ class Roboreg:
 					r.printproperties()
 					break
 
-		self.save()
+		self.save("getproperties")
 
 	def call(self, func, arglist):
 		token = self.login()

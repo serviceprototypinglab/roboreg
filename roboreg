@@ -245,7 +245,11 @@ class Roboreg:
 		print(returndata)
 
 	def servicecall(self, environ, start_response):
-		pickedrobots = self.pickinternal("camera=True")
+		import urllib.parse
+
+		query = urllib.parse.unquote(environ["QUERY_STRING"])
+
+		pickedrobots = self.pickinternal(query)
 
 		status = "200 OK"
 		headers = [("Content-type", "application/json")]

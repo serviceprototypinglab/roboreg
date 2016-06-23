@@ -38,6 +38,8 @@ The output of Roboreg is as follows:
 
 Notice how mutual exclusion is realised with "roboreg show $HOSTNAME".
 
+Use the embedded service gateway: http://localhost:11000/?camera=True.
+
 Source the syntax auto-completion in bash:
  $ . roboreg.bashcompletion
 Alternatively, copy the file permanently to /etc/bash_completion.d/.

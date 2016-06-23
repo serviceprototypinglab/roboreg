@@ -27,7 +27,7 @@ class SafeGuard:
 
 		if os.path.isfile(lockfile):
 			print("**safeguard block [{:s}]**".format(func))
-			return
+			return "BLOCKED"
 		open(lockfile, "w")
 		print("**safeguard entry [{:s}]**".format(func))
 		x = self.funcs[func](*args)

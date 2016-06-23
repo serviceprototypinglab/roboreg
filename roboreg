@@ -251,19 +251,38 @@ class Roboreg:
 
 		f = open(filename)
 		filecontents = f.read()
+		filename = os.path.basename(filename)
 		self.call("uploadmodule", [filename, filecontents])
 
 	def servicecall(self, environ, start_response):
 		import urllib.parse
 
 		query = urllib.parse.unquote(environ["QUERY_STRING"])
+		path = environ["PATH_INFO"]
 
-		pickedrobots = self.pickinternal(query)
+		# quick hack; needs real REST framework...
+		if path == "/upload":
+			clength = int(environ.get("CONTENT_LENGTH", "0"))
+			#uploaddata = environ["wsgi.input"].read(clength)
+			#print(uploaddata)
 
-		status = "200 OK"
-		headers = [("Content-type", "application/json")]
-		start_response(status, headers)
-		return ["\n".join(pickedrobots).encode("utf-8")]
+			import cgi
+			form = cgi.FieldStorage(fp=environ["wsgi.input"], environ=environ)
+			filename = form["filename"].value
+			filecontents = form["filecontents"].file.read()
+			self.call("uploadmodule", [filename, filecontents])
+
+			status = "200 OK"
+			headers = [("Content-type", "application/json")]
+			start_response(status, headers)
+			return ["ok".encode("utf-8")]
+		elif path == "/":
+			pickedrobots = self.pickinternal(query)
+
+			status = "200 OK"
+			headers = [("Content-type", "application/json")]
+			start_response(status, headers)
+			return ["\n".join(pickedrobots).encode("utf-8")]
 
 	def service(self):
 		import wsgiref.simple_server

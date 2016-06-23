@@ -95,7 +95,7 @@ class Roboreg:
 		print("\x1b[31m\x1b[1m{:s}\x1b[0m".format(estr))
 
 	def history(self):
-		os.system("cd {:s} && git log --oneline".format(self.cachedir))
+		os.system("cd {:s} && git log --pretty='%ar %s'".format(self.cachedir))
 
 	def login(self):
 		data = 'username={:s}&password={:s}&eauth={:s}'.format(self.username, self.password, self.eauth)
@@ -205,7 +205,7 @@ class Roboreg:
 	def usage(self):
 		print("Usage:")
 		print("roboreg scan        - live-scan the network")
-		print("        prop <name> - live-scan the properties")
+		print("        prop <name> - live-scan the properties of a robot")
 		print("        show        - show cached results")
 		print("        show <name> - show details about a robot")
 		print("        hist        - audit the history")

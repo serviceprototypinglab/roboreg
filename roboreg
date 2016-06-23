@@ -237,12 +237,21 @@ class Roboreg:
 			token = self.login()
 		if not token:
 			return
-		data = self.makedata("ros.{:s}".format(func), arglist)
+		if not "." in func:
+			func = "ros.{:s}".format(func)
+		data = self.makedata(func, arglist)
 		s = self.query(data, token)
 		if not s:
 			return
 		returndata = s["return"][0]
 		print(returndata)
+
+	def push(self, filename):
+		import base64
+
+		f = open(filename)
+		filecontents = f.read()
+		self.call("uploadmodule", [filename, filecontents])
 
 	def servicecall(self, environ, start_response):
 		import urllib.parse
@@ -270,6 +279,7 @@ class Roboreg:
 		print("        pick <cond> - pick robots based on conditions: 'a=b c>d' etc.")
 		print("        hist        - audit the history")
 		print("        call <func> - call a function (with parameters)")
+		print("        push <file> - upload a module file")
 		print("        srvc        - run roboreg as a service ")
 
 	def work(self):
@@ -299,6 +309,11 @@ class Roboreg:
 				self.pick(sys.argv[2])
 			else:
 				print("Error: invalid pick argument.")
+		elif command == "push":
+			if len(sys.argv) == 3:
+				self.push(sys.argv[2])
+			else:
+				print("Error: invalid push argument.")
 		elif command == "hist":
 			self.history()
 		elif command == "call":

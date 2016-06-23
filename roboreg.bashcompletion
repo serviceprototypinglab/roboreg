@@ -17,8 +17,11 @@ _roboreg()
       local methods=`./roboreg show $firstrobot | grep -- "- " | cut -d "/" -f 1 | cut -d " " -f 2 | tr "\\n" " "`
       COMPREPLY=( $( compgen -W "$methods" -- $cur ) )
       ;;
+    push)
+      COMPREPLY=( $( compgen -W `ls -1 *.py | tr "\\n" " "` -- $cur ) )
+      ;;
     ./roboreg)
-      COMPREPLY=( $( compgen -W "scan prop show pick hist call srvc" -- $cur ) )
+      COMPREPLY=( $( compgen -W "scan prop show pick hist call push srvc" -- $cur ) )
       ;;
   esac
 }

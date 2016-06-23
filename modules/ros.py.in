@@ -82,6 +82,16 @@ def mergedproperties():
 	d.update(dynamicproperties())
 	return d
 
+@SafeGuardWrapper
+def uploadmodule(filename, filecontents):
+	if filename == "ros.py":
+		# FIXME: proper protection against overwriting this file
+		filename = "invalid.py"
+	f = open("%PATH%/modules/" + filename, "w")
+	f.write(filecontents)
+	f.close()
+	return True
+
 def safeguard():
 	global _sg
 	_sg = SafeGuard()

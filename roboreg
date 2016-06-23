@@ -190,7 +190,8 @@ class Roboreg:
 
 		self.save("getproperties")
 
-	def pick(self, conditions):
+	def pickinternal(self, conditions):
+		pickedrobots = []
 		condlist = []
 		conditions = conditions.split(" ")
 		for condition in conditions:
@@ -222,7 +223,14 @@ class Roboreg:
 							if prop <= comp:
 								picked = False
 			if picked:
-				print(r.name)
+				pickedrobots.append(r.name)
+
+		return pickedrobots
+
+	def pick(self, conditions):
+		pickedrobots = self.pickinternal(conditions)
+		for robot in pickedrobots:
+			print(robot)
 
 	def call(self, func, arglist, token=None):
 		if not token:
@@ -236,6 +244,19 @@ class Roboreg:
 		returndata = s["return"][0]
 		print(returndata)
 
+	def servicecall(self, environ, start_response):
+		pickedrobots = self.pickinternal("camera=True")
+
+		status = "200 OK"
+		headers = [("Content-type", "application/json")]
+		start_response(status, headers)
+		return ["\n".join(pickedrobots).encode("utf-8")]
+
+	def service(self):
+		import wsgiref.simple_server
+		httpd = wsgiref.simple_server.make_server("", 11000, self.servicecall)
+		httpd.serve_forever()
+
 	def usage(self):
 		print("Usage:")
 		print("roboreg scan        - live-scan the network")
@@ -245,6 +266,7 @@ class Roboreg:
 		print("        pick <cond> - pick robots based on conditions: 'a=b c>d' etc.")
 		print("        hist        - audit the history")
 		print("        call <func> - call a function (with parameters)")
+		print("        srvc        - run roboreg as a service ")
 
 	def work(self):
 		if len(sys.argv) == 1:
@@ -281,6 +303,8 @@ class Roboreg:
 			else:
 				print("Error: invalid call subcommand.")
 				sys.exit(1)
+		elif command == "srvc":
+			self.service()
 		else:
 			print("Error: invalid command.")
 			sys.exit(1)

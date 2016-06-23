@@ -5,14 +5,17 @@ _roboreg()
 
   case "$prev" in
     show)
-      robots=`./roboreg show | cut -d " " -f 2 | tr "\\n" " "`
-      COMPREPLY=( $( compgen -W $robots -- $cur ) )
+      local robots=`./roboreg show | cut -d " " -f 2 | tr "\\n" " "`
+      COMPREPLY=( $( compgen -W "$robots" -- $cur ) )
       ;;
     prop)
-      robots=`./roboreg show | cut -d " " -f 2 | tr "\\n" " "`
-      COMPREPLY=( $( compgen -W $robots -- $cur ) )
+      local robots=`./roboreg show | cut -d " " -f 2 | tr "\\n" " "`
+      COMPREPLY=( $( compgen -W "$robots" -- $cur ) )
       ;;
     call)
+      local firstrobot=`./roboreg show | cut -d " " -f 2`
+      local methods=`./roboreg show $firstrobot | grep -- "- " | cut -d "/" -f 1 | cut -d " " -f 2 | tr "\\n" " "`
+      COMPREPLY=( $( compgen -W "$methods" -- $cur ) )
       ;;
     ./roboreg)
       COMPREPLY=( $( compgen -W "scan prop show hist call" -- $cur ) )

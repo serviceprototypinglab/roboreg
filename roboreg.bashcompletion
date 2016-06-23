@@ -18,7 +18,7 @@ _roboreg()
       COMPREPLY=( $( compgen -W "$methods" -- $cur ) )
       ;;
     ./roboreg)
-      COMPREPLY=( $( compgen -W "scan prop show hist call" -- $cur ) )
+      COMPREPLY=( $( compgen -W "scan prop show pick hist call" -- $cur ) )
       ;;
   esac
 }

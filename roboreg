@@ -190,6 +190,40 @@ class Roboreg:
 
 		self.save("getproperties")
 
+	def pick(self, conditions):
+		condlist = []
+		conditions = conditions.split(" ")
+		for condition in conditions:
+			for operator in ("=", "<", ">"):
+				if operator in condition:
+					property, value = condition.split(operator)
+					condlist.append((property, operator, value))
+		for r in self.robots:
+			picked = True
+			for p in r.properties:
+				for c in condlist:
+					if c[0] == p:
+						#print("MATCH?", p, r.properties[p], c)
+						prop = r.properties[p]
+						comp = c[2]
+						if type(prop) == float:
+							comp = float(comp)
+						elif type(prop) == int:
+							comp = int(comp)
+						elif type(prop) == bool:
+							comp = comp in ("True", "true", "1")
+						if c[1] == "=":
+							if prop != comp:
+								picked = False
+						elif c[1] == "<":
+							if prop >= comp:
+								picked = False
+						elif c[1] == ">":
+							if prop <= comp:
+								picked = False
+			if picked:
+				print(r.name)
+
 	def call(self, func, arglist, token=None):
 		if not token:
 			token = self.login()
@@ -208,6 +242,7 @@ class Roboreg:
 		print("        prop <name> - live-scan the properties of a robot")
 		print("        show        - show cached results")
 		print("        show <name> - show details about a robot")
+		print("        pick <cond> - pick robots based on conditions: 'a=b c>d' etc.")
 		print("        hist        - audit the history")
 		print("        call <func> - call a function (with parameters)")
 
@@ -233,6 +268,11 @@ class Roboreg:
 				self.getproperties(sys.argv[2])
 			else:
 				print("Error: invalid prop argument.")
+		elif command == "pick":
+			if len(sys.argv) == 3:
+				self.pick(sys.argv[2])
+			else:
+				print("Error: invalid pick argument.")
 		elif command == "hist":
 			self.history()
 		elif command == "call":

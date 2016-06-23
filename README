@@ -4,20 +4,20 @@ Installation instructions
 -------------------------
 
 This project requires Salt version 2016.3. The non-API parts should work with
-the older 2014.1. Salt may have to be patched (apply salt-netapi.diff).
+the older 2014.1. Salt will have to be patched (apply salt-netapi.diff) as
+otherwise the master will not be found by the API.
 Install Salt and (optionally) deactivate the system-wide daemons to rather
 control your own instances:
  $ apt-get install salt-master salt-minion salt-api
- $ update-rc.d salt-master disable; systemctl stop salt-master
- $ update-rc.d salt-minion disable; systemctl stop salt-minion
- $ sudo patch /usr/lib/python2.7/dist-packages/salt/netapi/__init__.py salt-netapi.diff
+ $ update-rc.d salt-master disable; systemctl stop salt-master  # optional
+ $ update-rc.d salt-minion disable; systemctl stop salt-minion  # optional
+ $ sudo patch /usr/lib/python2.7/dist-packages/salt/netapi/__init__.py salt/salt-netapi.diff
 
-Copy roboreg.ini.dist to roboreg.ini and configure it accordingly. You MUST
-also change the path in modules/ros.py (until we find a solution...)
+Copy roboreg.ini.dist to roboreg.ini and configure it accordingly.
 
-Launch in the following order (on separate terminals):
- $ ./launch-salt-master.sh
- $ ./launch-salt-minion.sh
+Launch in the following order (on separate terminals), if not already done:
+ $ ./salt/launch-salt-master.sh
+ $ ./salt/launch-salt-minion.sh
  $ salt-key -c config --accept $HOSTNAME
 
 Test the functionality:
@@ -25,7 +25,7 @@ Test the functionality:
  $ ./test-scripts/salt-roscommand.sh
 
 To make use of the Roboreg registry, launch in addition:
- $ ./launch-salt-api.sh
+ $ ./salt/launch-salt-api.sh
 
 Again, test the functionality (you should NOT see an unauthorized status).
 Then, run the client:

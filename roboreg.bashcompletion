@@ -18,7 +18,7 @@ _roboreg()
       COMPREPLY=( $( compgen -W "$methods" -- $cur ) )
       ;;
     push)
-      local appfiles=`ls -1 *.py apps/*.py foo/*.py 2>/dev/null | tr "\\n" " "`
+      local appfiles=`ls -1 *.py apps/*.py 2>/dev/null | tr "\\n" " "`
       COMPREPLY=( $( compgen -W "$appfiles" -- $cur ) )
       ;;
     ./roboreg)

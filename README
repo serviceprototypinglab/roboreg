@@ -21,15 +21,15 @@ Launch in the following order (on separate terminals):
  $ salt-key -c config --accept $HOSTNAME
 
 Test the functionality:
- $ ./launch-salt-command.sh ls
- $ ./launch-salt-roscommand.sh
+ $ ./test-scripts/salt-command.sh ls
+ $ ./test-scripts/salt-roscommand.sh
 
 To make use of the Roboreg registry, launch in addition:
  $ ./launch-salt-api.sh
 
 Again, test the functionality (you should NOT see an unauthorized status).
 Then, run the client:
- $ ./api-call-http.sh
+ $ ./test-scripts/api-call-http.sh
  $ ./roboreg
 
 The output of Roboreg is as follows:

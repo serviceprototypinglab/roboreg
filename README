@@ -18,7 +18,7 @@ Copy roboreg.ini.dist to roboreg.ini and configure it accordingly.
 Launch in the following order (on separate terminals), if not already done:
  $ ./salt/launch-salt-master.sh
  $ ./salt/launch-salt-minion.sh
- $ salt-key -c config --accept $HOSTNAME
+ $ salt-key -c salt/config --accept $HOSTNAME
 
 Test the functionality:
  $ ./test-scripts/salt-command.sh ls

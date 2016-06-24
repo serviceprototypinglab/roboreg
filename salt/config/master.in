@@ -1,4 +1,6 @@
 user: $USER
+module_dirs:
+ - $PWD/salt/modules
 
 interface: 127.0.0.1
 

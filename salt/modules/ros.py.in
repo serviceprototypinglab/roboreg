@@ -11,7 +11,7 @@ class SafeGuard:
 		#	globals()[func] = partial(self.guard, func)
 
 		# FIXME: is set to /root otherwise which cannot be written to
-		os.chdir("%PATH%")
+		os.chdir("%PATH%/salt")
 
 		self.lockdir = ".locks"
 		#os.makedirs(self.lockdir, exists_ok=True) # PY3
@@ -87,7 +87,7 @@ def uploadmodule(filename, filecontents):
 	if filename == "ros.py":
 		# FIXME: proper protection against overwriting this file
 		filename = "invalid.py"
-	f = open("%PATH%/modules/" + filename, "w")
+	f = open("%PATH%/salt/modules/" + filename, "w")
 	f.write(filecontents)
 	f.close()
 	return True

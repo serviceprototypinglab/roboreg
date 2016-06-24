@@ -1,0 +1,11 @@
+user: $USER
+master: localhost
+module_dirs:
+ - $PWD/salt/modules
+
+ipc_mode: tcp
+pki_dir: $PWD/salt/pki/minion
+cachedir: $PWD/salt/cachedir
+pidfile: $PWD/salt/miscdir/pidfile-minion
+sock_dir: $PWD/salt/miscdir
+log_file: $PWD/salt/miscdir/salt-minion.log

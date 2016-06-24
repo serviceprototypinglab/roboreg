@@ -22,8 +22,8 @@ external_auth:
 #sharedsecret: s3cr3t
 
 ipc_mode: tcp
-pki_dir: $PWD/pki/master
-cachedir: $PWD/cachedir
-pidfile: $PWD/miscdir/pidfile-master
-sock_dir: $PWD/miscdir
-log_file: $PWD/miscdir/salt-master.log
+pki_dir: $PWD/salt/pki/master
+cachedir: $PWD/salt/cachedir
+pidfile: $PWD/salt/miscdir/pidfile-master
+sock_dir: $PWD/salt/miscdir
+log_file: $PWD/salt/miscdir/salt-master.log

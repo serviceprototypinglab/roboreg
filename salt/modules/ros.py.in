@@ -68,7 +68,7 @@ def introspec():
 @SafeGuardWrapper
 def staticproperties():
 	import yaml
-	props = yaml.load(open("%PATH%/modules/properties.yaml"))
+	props = yaml.load(open("%PATH%/salt/modules/properties.yaml"))
 	return props
 
 @SafeGuardWrapper

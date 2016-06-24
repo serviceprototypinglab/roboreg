@@ -30,13 +30,16 @@ To make use of the Roboreg registry, launch in addition:
 Again, test the functionality (you should NOT see an unauthorized status).
 Then, run the client:
  $ ./test-scripts/api-call-http.sh
- $ ./roboreg
+ $ ./roboreg show
 
 The output of Roboreg is as follows:
  Robot ecrp / t=1465385020 / h=adbbc3 [  *]
        ^name  ^timestamp     ^hash    ^liveliness
 
 Notice how mutual exclusion is realised with "roboreg show $HOSTNAME".
+
+Try function chaining to apply an operation to a selection:
+ $ ./roboreg pick "camera=True" » call test
 
 Use the embedded service gateway: http://localhost:11000/?camera=True.
 

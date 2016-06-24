@@ -268,8 +268,15 @@ class Roboreg:
 
 			import cgi
 			form = cgi.FieldStorage(fp=environ["wsgi.input"], environ=environ)
-			filename = form["filename"].value
-			filecontents = form["filecontents"].file.read()
+			#filename = form["filename"].value
+			fileurl = form["fileurl"].value
+			if fileurl:
+				import urllib.request
+				filename = os.path.basename(urllib.parse.urlparse(fileurl)[2])
+				filecontents = urllib.request.urlopen(fileurl).read()
+			else:
+				filename = form["filecontents"].filename
+				filecontents = form["filecontents"].file.read()
 			self.call("uploadmodule", [filename, filecontents])
 
 			status = "200 OK"

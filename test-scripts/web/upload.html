@@ -1,13 +1,19 @@
 <html>
 <head>
-<title>Upload robotics application to ECRP</title>
+<title>ECRP Deployment</title>
 </head>
 <body>
 
+<h2>ECRP Deployment: Upload robotics application to your ECRP instance</h2>
+
 <form action="http://localhost:11000/upload" method="POST" enctype="multipart/form-data">
-Filename:
+<!--
+File name:
 <input type="text" name="filename" value="myapp.py">
-File:
+-->
+File reference:
+<input type="text" name="fileurl">
+File upload:
 <input type="file" name="filecontents">
 <input type="submit" value="Upload">
 </form>

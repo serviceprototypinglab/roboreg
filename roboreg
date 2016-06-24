@@ -91,8 +91,10 @@ class Roboreg:
 		f.close()
 		os.system("cd {:s} && git add . && git commit -q -m '{:s}'".format(self.cachedir, msg))
 
-	def neterror(self):
+	def neterror(self, reason=None):
 		estr = "Network error."
+		if reason:
+			estr += " [{:s}]".format(str(reason))
 		print("\x1b[31m\x1b[1m{:s}\x1b[0m".format(estr))
 
 	def history(self):
@@ -102,8 +104,8 @@ class Roboreg:
 		data = 'username={:s}&password={:s}&eauth={:s}'.format(self.username, self.password, self.eauth)
 		try:
 			f = urllib.request.urlopen("{:s}/login".format(self.saltapi), bytearray(data, "utf-8"))
-		except:
-			self.neterror()
+		except Exception as e:
+			self.neterror(e)
 			return
 		s = json.loads(f.read().decode("utf-8"))
 		token = s["return"][0]["token"]
@@ -115,8 +117,8 @@ class Roboreg:
 		#headers["Content-Type"] = "application/json"
 		try:
 			req = urllib.request.Request(self.saltapi, bytearray(data, "utf-8"), headers)
-		except:
-			self.neterror()
+		except Exception as e:
+			self.neterror(e)
 			return
 		f = urllib.request.urlopen(req)
 		s = json.loads(f.read().decode("utf-8"))

@@ -68,6 +68,7 @@ class Roboreg:
 		self.cachedir = config["reg"]["cachedir"]
 
 		self.robots = []
+		self.filter = None
 
 		self.load()
 
@@ -124,7 +125,12 @@ class Roboreg:
 	def makedata(self, func, arglist=[]):
 		data = []
 		data.append(("client", "local"))
-		data.append(("tgt", "*"))
+		tgt = "*"
+		if self.filter is not None:
+			#tgt = self.filter
+			# FIXME: according to docs, list would be possible
+			tgt = ",".join(self.filter)
+		data.append(("tgt", tgt))
 		data.append(("fun", func))
 		for arg in arglist:
 			data.append(("arg", arg))
@@ -159,7 +165,8 @@ class Roboreg:
 
 	def show(self):
 		for r in self.robots:
-			print(r)
+			if self.filter is None or r.name in self.filter:
+				print(r)
 
 	def showdetails(self, name):
 		for r in self.robots:
@@ -231,6 +238,7 @@ class Roboreg:
 		pickedrobots = self.pickinternal(conditions)
 		for robot in pickedrobots:
 			print(robot)
+		self.filter = pickedrobots
 
 	def call(self, func, arglist, token=None):
 		if not token:
@@ -313,38 +321,52 @@ class Roboreg:
 			self.usage()
 			sys.exit(1)
 
-		command = sys.argv[1]
+		argv = sys.argv[1:]
+
+		chain = []
+		while "»" in argv:
+			idx = argv.index("»")
+			chain.append(argv[:idx])
+			argv = argv[idx+1:]
+		if argv:
+			chain.append(argv)
+
+		for argv in chain:
+			self.process(argv)
+
+	def process(self, argv):
+		command = argv[0]
 
 		if command == "scan":
 			self.introspec()
 		elif command == "show":
-			if len(sys.argv) == 2:
+			if len(argv) == 1:
 				self.show()
-			elif len(sys.argv) == 3:
-				self.showdetails(sys.argv[2])
+			elif len(argv) == 2:
+				self.showdetails(argv[1])
 			else:
 				print("Error: invalid show argument.")
 				sys.exit(1)
 		elif command == "prop":
-			if len(sys.argv) == 3:
-				self.getproperties(sys.argv[2])
+			if len(argv) == 2:
+				self.getproperties(argv[1])
 			else:
 				print("Error: invalid prop argument.")
 		elif command == "pick":
-			if len(sys.argv) == 3:
-				self.pick(sys.argv[2])
+			if len(argv) == 2:
+				self.pick(argv[1])
 			else:
 				print("Error: invalid pick argument.")
 		elif command == "push":
-			if len(sys.argv) == 3:
-				self.push(sys.argv[2])
+			if len(argv) == 2:
+				self.push(argv[1])
 			else:
 				print("Error: invalid push argument.")
 		elif command == "hist":
 			self.history()
 		elif command == "call":
-			if len(sys.argv) >= 3:
-				self.call(sys.argv[2], sys.argv[3:])
+			if len(argv) >= 2:
+				self.call(argv[1], argv[2:])
 			else:
 				print("Error: invalid call subcommand.")
 				sys.exit(1)

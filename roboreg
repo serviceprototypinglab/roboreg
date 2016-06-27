@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 #
-# Robot registry client
+# Roboreg - A service registry and device manager for fleets of robots
+# Copyright (C) 2016 Zürcher Hochschule für Angewandte Wissenschaften
+# https://blog.zhaw.ch/icclab/category/research-approach/themes/cloud-robotics/
 
 import urllib.request
 import urllib.parse

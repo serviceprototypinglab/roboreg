@@ -91,7 +91,7 @@ class Roboreg:
 		f = open(regpath, "wb")
 		pickle.dump(self.robots, f)
 		f.close()
-		os.system("cd {:s} && git add . && git commit -q -m '{:s}'".format(self.cachedir, msg))
+		os.system("cd {:s} && git add . && git commit -q -m '{:s}' >/dev/null".format(self.cachedir, msg))
 
 	def neterror(self, reason=None):
 		estr = "Network error."

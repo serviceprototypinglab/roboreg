@@ -1,4 +1,33 @@
-Robot Registry...
+Roboreg - A service registry and device manager for fleets of robots
+Copyright (C) 2016 Zürcher Hochschule für Angewandte Wissenschaften
+https://blog.zhaw.ch/icclab/category/research-approach/themes/cloud-robotics/
+====================================================================
+
+Purpose
+-------
+
+Roboreg gives owners or tenants of robots the ability to check their
+status, use their services, and deploy and run software applications.
+
+Roboreg uses Salt as underlying device coupling infrastructure. The
+service functionality will be provided by ROS nodes present on the
+robots.
+
++---------------+
+| CLI Interface |
++---------------+
+      |
+      v
++=========+   +----------+   +-------------+    +----------------+
+||Roboreg||-->| Salt API |-->| Salt Master |--->| Salt Minion(s) |
++=========+   +----------+   +-------------+    +----------------+
+      ^
+      |
++--------------------+
+| Service Interface  |
++--------------------+
+
+Note: This is a research prototype. Your robots may go wild.
 
 Installation instructions
 -------------------------

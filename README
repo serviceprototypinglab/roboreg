@@ -33,8 +33,8 @@ Then, run the client:
  $ ./roboreg show
 
 The output of Roboreg is as follows:
- Robot ecrp / t=1465385020 / h=adbbc3 [  *]
-       ^name  ^timestamp     ^hash    ^liveliness
+ Robot minionhost / t=1465385020 / h=adbbc3 [  *]
+       ^name($HN.)  ^timestamp     ^hash    ^liveliness
 
 Notice how mutual exclusion is realised with "roboreg show $HOSTNAME".
 

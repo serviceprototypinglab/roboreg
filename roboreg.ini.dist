@@ -1,5 +1,5 @@
 [reg]
-username = ecrp
+username = roboreg
 password = s3cr3t
 eauth = auto
 saltapi = http://localhost:8001

@@ -14,12 +14,12 @@ rest_cherrypy:
 
 external_auth:
   auto:
-    ecrp:
+    roboreg:
       - .*
 
 #external_auth:
 #  sharedsecret:
-#    ecrp:
+#    roboreg:
 #      - .*
 #sharedsecret: s3cr3t
 

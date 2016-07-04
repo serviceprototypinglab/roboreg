@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: saltmaster
+  labels:
+    app: saltmaster
+spec:
+  volumes:
+  - name: keys-volume
+    secret:
+      secretName: ssh-keys-salt-master
+  containers:
+  - name: saltmaster
+    image: gtoff/salt_master:devmgt
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 4505
+    - containerPort: 4506
+    - containerPort: 8001
+    volumeMounts:
+      - name: keys-volume
+        readOnly: true
+        mountPath: "/tmp/etc/salt/pki/master/"

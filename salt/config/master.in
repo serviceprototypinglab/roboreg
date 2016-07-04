@@ -1,31 +1,30 @@
-user: $USER
-module_dirs:
- - $PWD/salt/modules
+#user: $USER
+#module_dirs:
+# - $PWD/salt/modules
 
-interface: 127.0.0.1
+interface: 0.0.0.0
 
 #rest_wsgi:
 #  port: 8001
 
 rest_cherrypy:
   port: 8001
-  host: 127.0.0.1
+  host: 0.0.0.0
   disable_ssl: true
 
+#external_auth:
+#  auto:
+#    roboreg:
+#      - .*
+
 external_auth:
-  auto:
+  pam:
     roboreg:
       - .*
 
-#external_auth:
-#  sharedsecret:
-#    roboreg:
-#      - .*
-#sharedsecret: s3cr3t
-
 ipc_mode: tcp
-pki_dir: $PWD/salt/pki/master
-cachedir: $PWD/salt/cachedir
-pidfile: $PWD/salt/miscdir/pidfile-master
-sock_dir: $PWD/salt/miscdir
-log_file: $PWD/salt/miscdir/salt-master.log
+#pki_dir: $PWD/salt/pki/master
+#cachedir: $PWD/salt/cachedir
+#pidfile: $PWD/salt/miscdir/pidfile-master
+#sock_dir: $PWD/salt/miscdir
+#log_file: $PWD/salt/miscdir/salt-master.log

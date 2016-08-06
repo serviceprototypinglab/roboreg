@@ -160,6 +160,8 @@ class Roboreg:
 			r = Robot(name, capabilities)
 			for index, robot in enumerate(self.robots):
 				if robot.name == r.name:
+					r.properties = robot.properties
+					r.propertytimestamp = robot.propertytimestamp
 					self.robots.pop(index)
 					break
 			self.robots.append(r)

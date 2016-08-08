@@ -92,6 +92,13 @@ def uploadmodule(filename, filecontents):
 	f.close()
 	return True
 
+def tail(appname):
+	# FIXME: appname is currently ignored
+	# inspiration: salt.output.progress
+	f = open("%PATH%/salt/miscdir/salt-minion.log")
+	lines = f.readlines()
+	return lines[-20:]
+
 def safeguard():
 	global _sg
 	_sg = SafeGuard()

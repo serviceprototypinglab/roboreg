@@ -1,6 +1,8 @@
 user: $USER
 module_dirs:
  - $PWD/salt/modules
+runner_dirs:
+ - $PWD/salt/runners
 
 interface: 127.0.0.1
 

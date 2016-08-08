@@ -1,1 +1,1 @@
-salt -c config "*" cmd.run "$*"
+salt -c salt/config "*" cmd.run "$*"

@@ -246,7 +246,7 @@ class Roboreg:
 			print(robot)
 		self.filter = pickedrobots
 
-	def call(self, func, arglist, token=None):
+	def call(self, func, arglist, token=None, printout=True):
 		if not token:
 			token = self.login()
 		if not token:
@@ -258,7 +258,9 @@ class Roboreg:
 		if not s:
 			return
 		returndata = s["return"][0]
-		print(returndata)
+		if printout:
+			print(returndata)
+		return returndata
 
 	def push(self, filename):
 		import base64
@@ -267,6 +269,15 @@ class Roboreg:
 		filecontents = f.read()
 		filename = os.path.basename(filename)
 		self.call("uploadmodule", [filename, filecontents])
+
+	def logs(self):
+		returndata = self.call("tail", ["*ignored*"], printout=False)
+		for name in returndata:
+			for r in self.robots:
+				if r.name == name:
+					print(r)
+					for line in returndata[name]:
+						print(" {:s}".format(line.strip()))
 
 	def servicecall(self, environ, start_response):
 		import urllib.parse
@@ -320,6 +331,7 @@ class Roboreg:
 		print("        hist        - audit the history")
 		print("        call <func> - call a function (with parameters)")
 		print("        push <file> - upload a module file")
+		print("        logs        - view module/application logs")
 		print("        srvc        - run roboreg as a service ")
 
 	def work(self):
@@ -368,6 +380,8 @@ class Roboreg:
 				self.push(argv[1])
 			else:
 				print("Error: invalid push argument.")
+		elif command == "logs":
+			self.logs()
 		elif command == "hist":
 			self.history()
 		elif command == "call":

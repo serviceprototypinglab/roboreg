@@ -70,6 +70,9 @@ Notice how mutual exclusion is realised with "roboreg show $HOSTNAME".
 Try function chaining to apply an operation to a selection:
  $ ./roboreg pick "camera=True" » call test
 
+Try the runner which aggregates logs on the master side:
+ $ salt-run -c salt/config ros.tail
+
 Use the embedded service gateway: http://localhost:11000/?camera=True.
 
 Source the syntax auto-completion in bash:

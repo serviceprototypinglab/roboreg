@@ -271,13 +271,28 @@ class Roboreg:
 		self.call("uploadmodule", [filename, filecontents])
 
 	def logs(self):
-		returndata = self.call("tail", ["*ignored*"], printout=False)
-		for name in returndata:
-			for r in self.robots:
-				if r.name == name:
-					print(r)
-					for line in returndata[name]:
-						print(" {:s}".format(line.strip()))
+		eventing = True
+
+		if eventing:
+			import salt.config
+			import salt.utils.event
+
+			# FIXME: this is currently not configurable
+			opts = salt.config.client_config("salt/config/master")
+			event = salt.utils.event.get_event("master", sock_dir=opts["sock_dir"], transport=opts["transport"], opts=opts)
+			while True:
+				data = event.get_event()
+				print(data)
+		else:
+			returndata = self.call("tail", ["*ignored*"], printout=False)
+			if not returndata:
+				return
+			for name in returndata:
+				for r in self.robots:
+					if r.name == name:
+						print(r)
+						for line in returndata[name]:
+							print(" {:s}".format(line.strip()))
 
 	def servicecall(self, environ, start_response):
 		import urllib.parse

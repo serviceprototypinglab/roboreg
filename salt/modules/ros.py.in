@@ -92,16 +92,16 @@ def uploadmodule(filename, filecontents):
 	f.close()
 	return True
 
-def tail(appname):
+def tail(logfile, eventing):
 	import os
-
-	eventing = True
 
 	# Do not set to any Salt logfile, as calling log will extend it
 	#logfile = "%PATH%/salt/miscdir/salt-api.log"
-	logfile = "/tmp/fakelog"
 
-	# FIXME: appname is currently ignored
+	# FIXME: appname is currently not possible, logfile must be specified directly
+	# FIXME: once logging starts, it never stops again
+	appname = None
+
 	os.system("touch '{:s}'".format(logfile))
 	if eventing:
 		import subprocess
@@ -111,7 +111,7 @@ def tail(appname):
 		while True:
 			line = tail.stdout.readline().split()
 			qline = json.dumps(line)
-			__salt__["event.send"]("ros", {"app": appname, "log": qline})
+			__salt__["event.send"]("ros", {"app": appname, "logfile": logfile, "log": qline})
 	else:
 		# inspiration: salt.output.progress
 		f = open(logfile)

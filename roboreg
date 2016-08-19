@@ -270,12 +270,14 @@ class Roboreg:
 		filename = os.path.basename(filename)
 		self.call("uploadmodule", [filename, filecontents])
 
-	def logs(self):
+	def logs(self, logfile):
 		eventing = True
 
 		if eventing:
 			import salt.config
 			import salt.utils.event
+
+			self.call("tail", [logfile, True], printout=False)
 
 			# FIXME: this is currently not configurable
 			opts = salt.config.client_config("salt/config/master")
@@ -284,7 +286,7 @@ class Roboreg:
 				data = event.get_event()
 				print(data)
 		else:
-			returndata = self.call("tail", ["*ignored*"], printout=False)
+			returndata = self.call("tail", [logfile, False], printout=False)
 			if not returndata:
 				return
 			for name in returndata:
@@ -346,7 +348,7 @@ class Roboreg:
 		print("        hist        - audit the history")
 		print("        call <func> - call a function (with parameters)")
 		print("        push <file> - upload a module file")
-		print("        logs        - view module/application logs")
+		print("        logs <file> - view module/application log file(s)")
 		print("        srvc        - run roboreg as a service ")
 
 	def work(self):
@@ -396,7 +398,10 @@ class Roboreg:
 			else:
 				print("Error: invalid push argument.")
 		elif command == "logs":
-			self.logs()
+			if len(argv) == 2:
+				self.logs(argv[1])
+			else:
+				print("Error: invalid logs argument.")
 		elif command == "hist":
 			self.history()
 		elif command == "call":

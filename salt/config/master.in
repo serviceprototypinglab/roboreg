@@ -31,3 +31,4 @@ cachedir: $PWD/salt/cachedir
 pidfile: $PWD/salt/miscdir/pidfile-master
 sock_dir: $PWD/salt/miscdir
 log_file: $PWD/salt/miscdir/salt-master.log
+api_logfile: $PWD/salt/miscdir/salt-api.log

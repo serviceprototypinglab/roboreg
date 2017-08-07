@@ -22,7 +22,7 @@ _roboreg()
       COMPREPLY=( $( compgen -W "$appfiles" -- $cur ) )
       ;;
     ./roboreg)
-      COMPREPLY=( $( compgen -W "scan prop show pick hist call push srvc" -- $cur ) )
+      COMPREPLY=( $( compgen -W "scan prop show pick hist call push logs srvc" -- $cur ) )
       ;;
   esac
 }
